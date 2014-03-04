@@ -1,0 +1,22 @@
+{
+  "name": "mp3dat",
+  "version": "0.0.2",
+  "description": "A simple MP3 parser that returns stat infos in a similar style to fs.stat for MP3 files or streams. (MPEG-1 compatible only)",
+  "main": "./lib/index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davidmarkclements/mp3dat.git"
+  },
+  "author": "David Mark Clements <david@nodecookbook.com>",
+  "homepage": "http://nodecookbook.com/mp3dat",
+  "license": "BSD",
+  "dependencies": {},
+  "devDependencies": {}
+}

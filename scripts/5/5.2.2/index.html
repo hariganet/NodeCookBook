@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.
+min.js"></script>
+<style>
+#frm, #raw {display:block; float:left; width:320px;}
+#raw {height:300px; width:320px; margin-left:0.5em;}
+</style>
+</head>
+<body>
+<form id="frm">
+	プロフィール：<select id="profiles">
+	<option></option>
+	</select>
+	<br>
+	フォーマット：<select id="formats">
+	<option value="json">JSON</option>
+	<option value="xml">XML</option>
+	</select>
+	<br>
+	<br>
+	<div id="output"></div>
+</form>
+<textarea id="raw"></textarea>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function () { // 無名関数でグローバルスコープを保護します
+	var formats = {
+		json: io.connect('ws://localhost:8080/json'),
+		xml: io.connect('ws://localhost:8080/xml')
+	};
+	
+	formats.json.on('connect', function () {
+		$('#profiles').html('<option></option>');
+		this.emit('profiles', function (profile_names) {
+			$.each(profile_names, function (i, pname) {
+				$('#profiles').append('<option>' + pname + '</option>');
+			});
+		});
+	});
+	
+	$('#profiles, #formats').change(function () {
+		var socket = formats[$('#formats').val()];
+		socket.emit('profile', $('#profiles').val());
+	});
+	
+	formats.json.on('profile', function (profile) {
+		$('#raw').val(JSON.stringify(profile));
+		$('#output').html('');
+		$.each(profile, function (k, v) {
+			$('#output').append('<b>' + k + '</b>：' + v + '<br>');
+		});
+	});
+	
+	formats.xml.on('profile', function (profile) {
+		$('#raw').val(profile);
+		$('#output').html('');
+		$.each($(profile)[1].nextSibling.childNodes, function (k, v) {
+			if (v && v.nodeType === 1) {
+				$('#output').append('<b>' + v.localName + '</b>：' + v.textContent + '<br>');
+			}
+		});
+	});
+}());
+</script>
+
+</body>
+</html>

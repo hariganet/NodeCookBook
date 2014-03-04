@@ -8,6 +8,8 @@ var mimeTypes = {
   '.css': 'text/css'
 };
 
+var cache = {};
+
 http.createServer(function(request, response){
   if(request.url === '/favicon.ico'){
     response.writeHead(404);   
@@ -19,18 +21,32 @@ http.createServer(function(request, response){
   f = 'content/' + lookup;
   fs.exists(f, function(exists){
     if(exists){
-      fs.readFile(f, function(err, data){
-        if(err){
-          response.writeHead(500);
-          response.end('Server Error!');
-          return;
-        }
-        var headers = {'Content-Type': mimeTypes[path.extname(f)] };
+      var headers = {'Content-Type': mimeTypes[path.extname(f)] };
+      if(cache[f]){
         response.writeHead(200, headers);
-        response.end(data);
+        response.end(cache[f].content);
+        return;
+      }
 
+      var s = fs.createReadStream(f).once('open', function(){
+        response.writeHead(200, headers);
+        this.pipe(response); 
+      }).once('error', function(e){
+        console.log(e);
+        response.writeHead(500);
+        response.end('サーバーエラー！');
+      });
+          
+      fs.stat(f, function(err, stats){
+        var bufferOffset = 0;
+        cache[f] = {content: new Buffer(stats.size)};
+        s.on('data', function(data){
+          data.copy(cache[f].content, bufferOffset);
+          bufferOffset += data.length;
+        });
       });
       return;
+
     }
     response.writeHead(404);
     response.end('ページが見つかりません。');

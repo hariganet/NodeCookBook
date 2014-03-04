@@ -1,0 +1,12 @@
+fields = ['Name', 'Irc', 'Twitter', 'Github', 'Location', 'Description'];
+
+form#addfrm(method='post', action='/admin/add')
+  fieldset
+    legend add
+    each field, i in fields
+      div
+      label= field
+      input(name="profile[#{field.toLowerCase()}]")
+    .btns
+      button.cancel(type='button') キャンセル
+      input(type='submit', value='追加');

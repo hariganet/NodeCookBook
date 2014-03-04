@@ -1,0 +1,24 @@
+if flash.error
+  hr
+  b= flash.error
+  hr
+
+if user
+  form(method='post')
+    input(name='_method', type='hidden', value='DELETE')
+    p #{user.name}さん、こんにちは！
+      a(href='javascript:', onClick='forms[0].submit()') [ログアウト]
+  include admin
+  include ../../views/profiles
+else
+  p ログインしてください
+  form(method='post')
+    fieldset
+      legend ログイン
+      p
+        label(for='user[name]') ユーザ名：
+        input(name='user[name]')
+      p
+        label(for='user[pwd]') パスワード：
+        input(type='password', name='user[pwd]')
+      input(type='submit')

@@ -1,0 +1,60 @@
+body
+  padding 50px
+  font 14px "Lucida Grande", Helvetica, Arial, sans-serif
+a
+  color: #00B7FF
+
+.pad
+	padding 0.5em
+#profiles
+	@extend .pad
+	th
+		@extend .pad
+	td
+		@extend .pad
+
+
+rndCorner(rad, sides...)
+  if length(sides) is 2
+    -moz-border-radius-{sides[0]}{sides[1]} rad
+    -webkit-border-{sides[0]}-{sides[1]}-radius rad
+    border-{sides[0]}-{sides[1]}-radius rad
+  else
+    -moz-border-radius rad
+    -webkit-border-radius rad
+    border-radius rad
+
+
+borderIt(rad = 0, size = 1px, type = solid, col = #000) 
+  border size type col
+  if rad { rndCorner(rad) } // 変更
+
+tdRad = 9px // 追加
+#profiles
+  borderIt 20px 2px
+  @extend .pad
+  background #000 // 追加
+  color #fff // 追加
+  th
+    @extend .pad
+  td 
+    @extend .pad
+    background blue + 35%
+    borderIt(col: #000 + 80%)
+    $color = pink - green - brown + gold - green
+    color desaturate($color + 100, 100)
+    &:hover
+      color @background + 180deg
+      background desaturate(@background, 40)
+      border-color @background
+  tr
+    &:nth-child(2)
+      td:first-child
+        rndCorner tdRad top left
+      td:last-child
+        rndCorner tdRad top right
+    &:last-child
+      td:first-child
+        rndCorner tdRad bottom left
+      td:last-child
+        rndCorner tdRad bottom right
